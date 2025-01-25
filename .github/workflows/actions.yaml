@@ -56,8 +56,8 @@ jobs:
 
       - name: Build the app
         run: |
-          eas build -p android --non-interactive --output-dir=build/android
-          eas build -p ios --non-interactive --output-dir=build/ios
+          eas build -p android --non-interactive
+          eas build -p ios --non-interactive
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
