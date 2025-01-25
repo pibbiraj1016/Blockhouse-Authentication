@@ -74,7 +74,7 @@ This workflow automates the CI/CD process for the project. It performs the follo
 3. **Deploying the App**: Publishes the app to Expo and sends notifications upon success.
 
 ## Key Components
-- **Triggers**: 
+1. **Triggers**:
   - Runs on `push` events to `main` branches.
   - Runs on `pull_request` events targeting the `main` branch.
 
