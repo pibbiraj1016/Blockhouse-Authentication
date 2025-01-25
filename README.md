@@ -90,32 +90,67 @@ The project uses the following major dependencies:
    - Install the Expo Go app on your device.
    - Scan the QR code from Expo Developer Tools to run the app.
 
-## CI/CD Pipeline
+# Documentation for Managing and Extending the CI/CD Pipeline
 
-The project includes a GitHub Actions workflow to automate the development pipeline.
+## Overview
+This workflow automates the CI/CD process for the project. It performs the following steps:
+1. **Linting and Testing**: Ensures code quality and passes all tests.
+2. **Building the App**: Prebuilds the Expo app and generates build artifacts for Android and iOS.
+3. **Deploying the App**: Publishes the app to Expo and sends notifications upon success.
 
-### Workflow Summary
+## Key Components
+1. **Triggers**:
+  - Runs on `push` events to `main` branches.
+  - Runs on `pull_request` events targeting the `main` branch.
 
-1. **Linting and Testing**:
+## How to Extend
 
-   - Runs `npm run lint` and `npm test` to ensure code quality.
+1. **Add Notifications**:
+   - Add more notification steps in the `deploy` job for platforms like Teams, Discord, or email.
+   - Example for Discord:
+     ```yaml
+     - name: Notify Discord
+       run: |
+         curl -X POST -H 'Content-Type: application/json' \
+           -d '{"content": "✅ Build and deployment successful!"}' ${{ secrets.DISCORD_WEBHOOK_URL }}
+     ```
 
-2. **Building the App**:
+2. **Add Deployment Steps for App Stores**:
+   - Use third-party actions to deploy to the Google Play Store or Apple App Store.
+   - Example for Google Play Store:
+     ```yaml
+     - name: Deploy to Google Play
+       uses: r0adkll/upload-google-play@v1
+       with:
+         serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+         packageName: com.example.app
+         releaseFiles: build/android/app-release.aab
+     ```
 
-   - Builds the app for Android and iOS using Expo.
-   - Artifacts (APK and IPA files) are uploaded for distribution.
+## How to Manage the Workflow
+1. **Update Dependencies**:
+   - Regularly update Node.js, npm, and Expo CLI versions in the workflow.
 
-3. **Deployment**:
-   - Publishes the app to Expo.
-   - Sends a Slack notification upon success.
+2. **Monitor and Debug Failures**:
+   - Use the GitHub Actions logs to troubleshoot failures in any step.
 
-### Managing Secrets
+3. **Secure Secrets**:
+   - Manage secrets in GitHub under **Settings > Secrets and variables**.
+   - Rotate credentials periodically to enhance security.
 
-To manage the pipeline, add the following secrets in your GitHub repository:
+4. **Add New Branches**:
+   - Update the `on.push.branches` section to include additional branches.
+   - Example:
+     ```yaml
+     on:
+       push:
+         branches:
+           - main
+           - staging
+     ```
 
-- `EXPO_USERNAME`: Your Expo account username.
-- `EXPO_PASSWORD`: Your Expo account password.
-- `SLACK_WEBHOOK_URL`: Webhook URL for Slack notifications.
+## Conclusion
+This CI/CD pipeline is flexible and can be easily extended to meet additional requirements. By following the provided guidelines, you can enhance its functionality and adapt it to various project needs.
 
 ## Scripts
 
